@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { terms, getCourseTerm } from '../utilities/times'
 import { Course } from './Course'
+import { useUserState, SignOutButton, SignInButton } from '../utilities/firebase'
 
 const TermButton = ({term, setTerm, checked}) => (
     <>
@@ -12,15 +13,19 @@ const TermButton = ({term, setTerm, checked}) => (
     </>
 );
 
-const TermSelector = ({term, setTerm}) => (
-    <div className="btn-group">
-    { 
-      Object.values(terms).map(value => (
-        <TermButton key={value} term={value} setTerm={setTerm} checked={value === term} />
-      ))
-    }
+const TermSelector = ({term, setTerm}) => {
+  const [user] = useUserState();
+  return <div className="btn-toolbar justify-content-between">
+      <div className="btn-group">
+      { 
+        Object.values(terms).map(
+          value => <TermButton key={value} term={value} setTerm={setTerm} checked={value === term} />
+        )
+      }
+      </div>
+      { user ? <SignOutButton /> : <SignInButton /> }
     </div>
-);
+};
 
 export const CourseList = ({ courses }) => {
     const [term, setTerm] = useState('Fall');
